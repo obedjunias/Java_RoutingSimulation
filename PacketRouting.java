@@ -1,6 +1,6 @@
 import java.awt.*;
 import java.Applet.*;
-
+/* <applet code="PacketRouting.class" height=600 width=600></applet>*/
 public class PacketRouting extends Applet
 {
     Graph g = new Graph(this);
@@ -40,10 +40,75 @@ class Options extends Panel
         add(b5);
     }
 
-    public boolean action(Event evt, Object arg)
-    {
-        if(evt.target instanceof Button){
-
-        }
-    }
+   public void lock()
+   {
+       run =true;
+   }
+   public void unlock()
+   {
+       run = false;
+   }
 }
+
+class Graph extends Canvas implements Runnable
+{
+    final int MAXNODES = 20;
+    final int MAX = MAXNODES+1;
+    final int NODESIZE = 20;
+    final int NODERADIX = 13;
+    final int DIJKSTRA = 1;
+
+    Point node [] = new Point[MAX];
+    int weight[][] = new int[MAX][MAX];
+    Point arrow[][] = new Point[MAX][MAX];
+    Point startp[][] = new Point[MAX][MAX];
+    Point endp[][] = new Point[MAX][MAX];
+    float dir_x[][] = new float[MAX][MAX];
+    float dir_y[][] = new flaot[MAX][MAX];
+
+    boolean aledge[][] = new boolean[MAX][MAX];
+    int dist[] = new int [MAX];
+    int finaldist[] = new int[MAX];
+    Color colornode = new Color[MAX];
+    boolean changed[] = new boolean[MAX];
+
+    int numchanged =0;
+    int neighbours = 0;
+    int step = 0;
+    int mindist, minnode, minstart, minend;
+
+    int numnodes = 0;
+    int emptyspots = 0;
+    int startgraph = 0;
+
+    int hitnode;
+    int node1,node2;
+    Point thispoint = new Point(0,0);
+    Point oldpoint = new Point(0,0);
+
+    boolean newarrow = false;
+    boolean movearrow = false;
+    boolean deletenode = false;
+    boolean movenode = false;
+    boolean performalg = false;
+    boolean clicked = false;
+
+    Font f1 = new Font("Arial",Font.BOLD,14);
+    Font f2 = new Font("Helvetica",Font.BOLD,16);
+    FontMetrics fm = getFontMetrics(f1);
+    int h = (int)fm.getHeight()/3;
+    
+    private Image img;
+    private Graphics gph;
+    private Dimension dim;
+
+    Thread algrthm;
+
+    int algorithm;
+
+    String showstring =  new String("");
+
+    boolean stepthrough = false;
+ 
+    
+} 
