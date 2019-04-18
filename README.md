@@ -4,9 +4,9 @@
 To Demonstrate the routing of packets from a source machine to a destination machine using appropriate routing algorithms.
 
 ## Team:
-Obed Junias (1BM17CS055)
-Niranjan V S (1BM17CS054)
-Raghavendra G Biradar (1BM17CS069)
+1. Obed Junias (1BM17CS055)
+2. Niranjan V S (1BM17CS054)
+3. Raghavendra G Biradar (1BM17CS069)
 
 ## Introduction:
 The routing algorithm is that part of the network layer responsible for deciding to which path an incoming packet should be transmitted on to.
