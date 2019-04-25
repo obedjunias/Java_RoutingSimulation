@@ -10,11 +10,11 @@ public class PacketRouting extends Applet
     public void init()
     {
       showStatus("Started");
-      setLayout(new BorderLayout(10, 10));
+      options.setBackground(Color.black);
+      setLayout(new BorderLayout(2,2));
       add("Center", g);
       add("North", ta);
       add("East", options);
-
     }
     public void lock() {
         g.lock();
@@ -43,20 +43,18 @@ class Options extends Panel
     Button b3 = new Button("Run");
     Button b4 = new Button("Step");
     Button b5 = new Button("Exit");
-
     PacketRouting p1;
     boolean locked = false; 
     Options(PacketRouting   root)
     {
         p1 = root;
-        setLayout(new GridLayout(6,1,0,10));
+        setLayout(new GridLayout(5,1,0,0));
         add(b1);
         add(b2);
         add(b3);
         add(b4);
         add(b5);
     }
-
    public void lock()
    {
        locked =true;
@@ -66,11 +64,11 @@ class Options extends Panel
        locked = false;
    }
 }
-class Txtarea extends Panel {
+class Txtarea extends Panel { 
     TxtOptions topt = new TxtOptions(this);
     DocText doctext = new DocText();
         Txtarea() {
-        setLayout(new BorderLayout(10, 10));
+        setLayout(new BorderLayout(2, 2));
         add("West", topt);
         add("Center", doctext);
     }
@@ -81,8 +79,10 @@ class TxtOptions extends Panel{
 
     TxtOptions(Txtarea t1)
     {
-        setLayout(new GridLayout(2, 1, 5, 0));
+        
         t = t1;
+        t.setBackground(Color.gray);
+        setLayout(new GridLayout(2, 1, 0, 0));
         c.addItem("Draw nodes");
         c.addItem("Remove nodes");
         c.addItem("Move nodes");
@@ -160,8 +160,8 @@ class GraphC extends Canvas implements Runnable
     boolean performalg = false;
     boolean clicked = false;
 
-    Font f1 = new Font("Arial",Font.BOLD,14);
-    Font f2 = new Font("Helvetica",Font.BOLD,16);
+    Font f1 = new Font("Arial",Font.BOLD,18);
+    Font f2 = new Font("Helvetica",Font.BOLD,18);
     FontMetrics fm = getFontMetrics(f1);
     int h = (int)fm.getHeight()/3;
     
@@ -199,7 +199,7 @@ class GraphC extends Canvas implements Runnable
     }
     public void init(){
         for (int i=0;i<MAXNODES;i++){
-            colornode[i]=Color.gray;
+            colornode[i]=Color.orange.brighter();
         for (int j=0;j<MAXNODES;j++)
             algedge[i][j] = false;    
     }
@@ -248,6 +248,7 @@ class GraphC extends Canvas implements Runnable
 //     colornode[minend] = Color.cyan;
 //     step++;
 //     repaint();
+
 // }
 // public void initalg(){
 //     init();
@@ -532,7 +533,7 @@ public final synchronized void update(Graphics g) {
         dim = d;
         gph = img.getGraphics();
     }
-    gph.setColor(Color.white);
+    gph.setColor(Color.black);
     gph.fillRect(0, 0, d.width, d.height);
     paint(gph);
     g.drawImage(img, 0, 0, null);
@@ -560,7 +561,7 @@ public void drawarrow(Graphics g, int i, int j) {
     int dx = (int)(Math.abs(7*dir_y[i][j]));
     int dy = (int)(Math.abs(7*dir_x[i][j]));
     String str = new String("" + weight[i][j]);
-    g.setColor(Color.black);
+    g.setColor(Color.green);
     if ((startp[i][j].x>endp[i][j].x) && (startp[i][j].y>=endp[i][j].y))
         g.drawString( str, arrow[i][j].x + dx, arrow[i][j].y - dy);
     if ((startp[i][j].x>=endp[i][j].x) && (startp[i][j].y<endp[i][j].y))
@@ -693,7 +694,7 @@ public void paint(Graphics g) {
     numchanged=0;
     neighbours=0;
     g.setFont(f1);
-    g.setColor(Color.black);
+    g.setColor(Color.green.darker());
     if (step==1)
         showstring="Algorithm running: red arrows point to nodes reachable from " +
                 " the startnode.\nThe distance to: ";
@@ -724,15 +725,15 @@ public void paint(Graphics g) {
 g.setColor(Color.blue);
     if (movestart)
         g.fillOval(thispoint.x-NODERADIX, thispoint.y-NODERADIX,NODESIZE, NODESIZE);
-    g.setColor(Color.black);
+    g.setColor(Color.orange);
     //if (performalg) endstepalg(g);
     g.setFont(f2);
     for (int i=0; i<numnodes; i++)
         if (node[i].x>0) {
-            g.setColor(Color.black);
+            g.setColor(Color.orange);
             g.drawOval(node[i].x-NODERADIX, node[i].y-NODERADIX,
                     NODESIZE, NODESIZE);
-            g.setColor(Color.blue);
+            g.setColor(Color.magenta);
             g.drawString(intToString(i), node[i].x-14, node[i].y-14);
         }
 }
