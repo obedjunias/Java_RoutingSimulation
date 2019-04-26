@@ -9,7 +9,11 @@ public class PacketRouting extends Applet
 
     public void init()
     {
+      Font myFont = new Font("TimesRoman", Font.BOLD, 18);
       showStatus("Started");
+    //   Color myColor = new Color(200,253,137);
+    //   ta.setColor(myColor);
+      ta.setFont(myFont);
       options.setBackground(Color.black);
       setLayout(new BorderLayout(2,2));
       add("Center", g);
