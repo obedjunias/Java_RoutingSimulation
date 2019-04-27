@@ -11,8 +11,6 @@ public class PacketRouting extends Applet
     {
       Font myFont = new Font("TimesRoman", Font.BOLD, 18);
       showStatus("Started");
-    //   Color myColor = new Color(200,253,137);
-    //   ta.setColor(myColor);
       ta.setFont(myFont);
       options.setBackground(Color.black);
       setLayout(new BorderLayout(2,2));
@@ -58,6 +56,36 @@ class Options extends Panel
         add(b3);
         add(b4);
         add(b5);
+    }
+    
+    public boolean action(Event evt, Object arg) {
+        if (evt.target instanceof Button) {
+            if (((String)arg).equals("Step")) {
+                if (!locked) {
+                    b3.setLabel("Next step");
+                    p1.g.stepalg();                }
+                else p1.ta.doctext.showline("Locked");
+            }
+            if (((String)arg).equals("Next step"))
+                p1.g.nextstep();
+            if (((String)arg).equals("Reset")) {
+                p1.g.reset();
+                b3.setLabel("Step");
+            }
+            if (((String)arg).equals("Clear")) {
+                p1.g.clear();
+                b3.setLabel("Step");
+            }
+            if (((String)arg).equals("Run")) {
+                if (!locked)
+                    p1.g.runalg();
+                else p1.ta.doctext.showline("Locked");
+            }
+            if (((String)arg).equals("Exit")) {
+                System.exit(0);
+            }
+        }
+        return true;
     }
    public void lock()
    {
@@ -189,7 +217,6 @@ class GraphC extends Canvas implements Runnable
         init();
         algorithm = DIJKSTRA;
         setBackground(Color.black);
-
     }
     public void lock(){
         locked = true;
@@ -210,69 +237,69 @@ class GraphC extends Canvas implements Runnable
     colornode[startgraph] = Color.red;
     performalg = false;
 }
-// public void clear(){
-//     startgraph = 0;
-//     numnodes = 0;
-//     emptyspots = 0;
-//     init();
-//     for (int i=0;i<MAXNODES;i++){
-//         node[i] = new Point(0,0);
-//         for (int j=0;j<MAXNODES;j++)
-//         weight[i][j] = 0;    
-//     }
-//     if (algrthm!=null)
-//         algrthm.stop();
-//         root.unlock();
-//         repaint();
+public void clear(){
+    startgraph = 0;
+    numnodes = 0;
+    emptyspots = 0;
+    init();
+    for (int i=0;i<MAXNODES;i++){
+        node[i] = new Point(0,0);
+        for (int j=0;j<MAXNODES;j++)
+        weight[i][j] = 0;    
+    }
+    if (algrthm!=null)
+        algrthm.stop();
+        root.unlock();
+        repaint();
 
-// }
-// public void reset(){
-//     init();
-//     if (algrthm!=null)
-//     algrthm.stop();
-//     root.unlock();
-//     repaint();
-// }
-// public void runalg(){
-//     root.lock();
-//     initalg();
-//     performalg = true;
-//     algrthm = new Thread(this);
-//     algrthm.start();
-// }
-// public void stepalg(){
-//     root.lock();
-//     initalg();
-//     performalg = true;
-//     nextstep();
-// }
-// public void nextstep(){
-//     finaldist[minend] = mindist;
-//     algedge[minstart][minend] = true;
-//     colornode[minend] = Color.cyan;
-//     step++;
-//     repaint();
+}
+public void reset(){
+    init();
+    if (algrthm!=null)
+    algrthm.stop();
+    root.unlock();
+    repaint();
+}
+public void runalg(){
+    root.lock();
+    initalg();
+    performalg = true;
+    algrthm = new Thread(this);
+    algrthm.start();
+}
+public void stepalg(){
+    root.lock();
+    initalg();
+    performalg = true;
+    nextstep();
+}
+public void nextstep(){
+    finaldist[minend] = mindist;
+    algedge[minstart][minend] = true;
+    colornode[minend] = Color.cyan;
+    step++;
+    repaint();
 
-// }
-// public void initalg(){
-//     init();
-//     for(int i=0;i<MAXNODES;i++){
-//         dist[i]=-1;
-//         finaldist[i] = -1;
-//         for (int j=0;j<MAXNODES;j++)
-//             algedge[i][j]=false;
-//     }
-//     dist[startgraph] = 0;
-//     finaldist[startgraph] = 0;
-//     step =0;
-// }
-// public void stop(){
-//     if(algrthm!=null)
-//         algrthm.suspend();
-// }
+}
+public void initalg(){
+    init();
+    for(int i=0;i<MAXNODES;i++){
+        dist[i]=-1;
+        finaldist[i] = -1;
+        for (int j=0;j<MAXNODES;j++)
+            algedge[i][j]=false;
+    }
+    dist[startgraph] = 0;
+    finaldist[startgraph] = 0;
+    step =0;
+}
+public void stop(){
+    if(algrthm!=null)
+        algrthm.suspend();
+}
 public void run(){
     for(int i=0;i<(numnodes-emptyspots);i++){
-        //nextstep();
+        nextstep();
         try {algrthm.sleep(2000);}
         catch (InterruptedException e){}
     }
@@ -323,7 +350,8 @@ public boolean mouseDown(Event evt, int x, int y) {
             else {
                 int i;
                 for (i=0;i<numnodes;i++)
-                    if (node[i].x==-100) break;
+                    if (node[i].x==-100)
+                    break;
                 node[i]=new Point(x, y);
                 emptyspots--;
             }
@@ -578,116 +606,114 @@ public void drawarrow(Graphics g, int i, int j) {
         g.drawString( str, arrow[i][j].x + dx,
                 arrow[i][j].y + fm.getHeight() );
 }
+public void detailsDijkstra(Graphics g, int i, int j) {
 
+    if ( (finaldist[i]!=-1) && (finaldist[j]==-1) ) {
+        g.setColor(Color.red);
+        if ( (dist[j]==-1) || (dist[j]>=(dist[i]+weight[i][j])) ) {
+            if ( (dist[i]+weight[i][j])<dist[j] ) {
+                changed[j]=true;
+                numchanged++;
+            }
+            dist[j] = dist[i]+weight[i][j];
+            colornode[j]=Color.red;
+            if ( (mindist==0) || (dist[j]<mindist) ) {
+                mindist=dist[j];
+                minstart=i;
+                minend=j;
+            }
+        }
+    }
+    else g.setColor(Color.gray);
+}
+public void endstepDijkstra(Graphics g) {
 
-// public void detailsDijkstra(Graphics g, int i, int j) {
+    for (int i=0; i<numnodes; i++)
+        if ( (node[i].x>0) && (dist[i]!=-1) ) {
+            String str = new String(""+dist[i]);
+            g.drawString(str, node[i].x - (int)fm.stringWidth(str)/2 -1,
+                    node[i].y + h);
 
-//     if ( (finaldist[i]!=-1) && (finaldist[j]==-1) ) {
-//         g.setColor(Color.red);
-//         if ( (dist[j]==-1) || (dist[j]>=(dist[i]+weight[i][j])) ) {
-//             if ( (dist[i]+weight[i][j])<dist[j] ) {
-//                 changed[j]=true;
-//                 numchanged++;
-//             }
-//             dist[j] = dist[i]+weight[i][j];
-//             colornode[j]=Color.red;
-//             if ( (mindist==0) || (dist[j]<mindist) ) {
-//                 mindist=dist[j];
-//                 minstart=i;
-//                 minend=j;
-//             }
-//         }
-//     }
-//     else g.setColor(Color.gray);
-// }
-// public void endstepDijkstra(Graphics g) {
+            if (finaldist[i]==-1) {
+                neighbours++;
+                if (neighbours!=1)
+                    showstring = showstring + ", ";
+                showstring = showstring + intToString(i) +"=" + dist[i];
+            }
+        }
+    showstring = showstring + ". ";
 
-//     for (int i=0; i<numnodes; i++)
-//         if ( (node[i].x>0) && (dist[i]!=-1) ) {
-//             String str = new String(""+dist[i]);
-//             g.drawString(str, node[i].x - (int)fm.stringWidth(str)/2 -1,
-//                     node[i].y + h);
+    if ( (step>1) && (numchanged>0) ) {
+        if (numchanged>1)
+            showstring = showstring + "Notice that the distances to ";
+        else showstring = showstring + "Notice that the distance to ";
+        for (int i=0; i<numnodes; i++)
+            if ( changed[i] )
+                showstring = showstring + intToString(i) +", ";
+        if (numchanged>1)
+            showstring = showstring + "have changed!\n";
+        else showstring = showstring + "has changed!\n";
+    }
+    else showstring = showstring + " ";
+    if (neighbours>1) {
 
-//             if (finaldist[i]==-1) {
-//                 neighbours++;
-//                 if (neighbours!=1)
-//                     showstring = showstring + ", ";
-//                 showstring = showstring + intToString(i) +"=" + dist[i];
-//             }
-//         }
-//     showstring = showstring + ". ";
+        showstring = showstring + "Node " + intToString(minend) +
+                " has the minimum distance.\n";
+        int newpaths=0;
+        for (int i=0; i<numnodes; i++)
+            if ( (node[i].x>0) && (weight[i][minend]>0) && ( finaldist[i] == -1 ) )
+                newpaths++;
+        if (newpaths>0)
+            showstring = showstring + "Any other path to " + intToString(minend) +
+                    " visits another red node, and will be longer than " +  mindist + ".\n";
+        else showstring = showstring +
+                "There are no other arrows coming in to "+
+                intToString(minend) + ".\n";
+    }
+    else {
+        boolean morenodes=false;
+        for (int i=0; i<numnodes; i++)
+            if ( ( node[i].x>0 ) && ( finaldist[i] == -1 ) && ( weight[i][minend]>0 ) )
+                morenodes=true;
+        boolean bridge=false;
+        for (int i=0; i<numnodes; i++)
+            if ( ( node[i].x>0 ) && ( finaldist[i] == -1 ) && ( weight[minend][i]>0 ) )
+                bridge=true;
+        if ( morenodes && bridge )
+            showstring = showstring + "Since this node forms a 'bridge' to "+
+                    "the remaining nodes,\nall other paths to this node will be longer.\n";
+        else if ( morenodes && (!bridge) )
+            showstring = showstring + "Remaining gray nodes are not reachable.\n";
+        else showstring = showstring + "There are no other arrows coming in to "+
+                    intToString(minend) + ".\n";
+    }
+    showstring = showstring + "Node " + intToString(minend) +
+            " will be colored orange to indicate " + mindist +
+            " is the length of the shortest path to " + intToString(minend) +".";
+   root.ta.doctext.showline(showstring);
+}
+public void detailsalg(Graphics g, int i, int j) {
+    if (algorithm==DIJKSTRA)
+        detailsDijkstra(g, i, j);
+}
+public void endstepalg(Graphics g) {
 
-//     if ( (step>1) && (numchanged>0) ) {
-//         if (numchanged>1)
-//             showstring = showstring + "Notice that the distances to ";
-//         else showstring = showstring + "Notice that the distance to ";
-//         for (int i=0; i<numnodes; i++)
-//             if ( changed[i] )
-//                 showstring = showstring + intToString(i) +", ";
-//         if (numchanged>1)
-//             showstring = showstring + "have changed!\n";
-//         else showstring = showstring + "has changed!\n";
-//     }
-//     else showstring = showstring + " ";
-//     if (neighbours>1) {
-
-//         showstring = showstring + "Node " + intToString(minend) +
-//                 " has the minimum distance.\n";
-//         int newpaths=0;
-//         for (int i=0; i<numnodes; i++)
-//             if ( (node[i].x>0) && (weight[i][minend]>0) && ( finaldist[i] == -1 ) )
-//                 newpaths++;
-//         if (newpaths>0)
-//             showstring = showstring + "Any other path to " + intToString(minend) +
-//                     " visits another red node, and will be longer than " +  mindist + ".\n";
-//         else showstring = showstring +
-//                 "There are no other arrows coming in to "+
-//                 intToString(minend) + ".\n";
-//     }
-//     else {
-//         boolean morenodes=false;
-//         for (int i=0; i<numnodes; i++)
-//             if ( ( node[i].x>0 ) && ( finaldist[i] == -1 ) && ( weight[i][minend]>0 ) )
-//                 morenodes=true;
-//         boolean bridge=false;
-//         for (int i=0; i<numnodes; i++)
-//             if ( ( node[i].x>0 ) && ( finaldist[i] == -1 ) && ( weight[minend][i]>0 ) )
-//                 bridge=true;
-//         if ( morenodes && bridge )
-//             showstring = showstring + "Since this node forms a 'bridge' to "+
-//                     "the remaining nodes,\nall other paths to this node will be longer.\n";
-//         else if ( morenodes && (!bridge) )
-//             showstring = showstring + "Remaining gray nodes are not reachable.\n";
-//         else showstring = showstring + "There are no other arrows coming in to "+
-//                     intToString(minend) + ".\n";
-//     }
-//     showstring = showstring + "Node " + intToString(minend) +
-//             " will be colored orange to indicate " + mindist +
-//             " is the length of the shortest path to " + intToString(minend) +".";
-//    root.ta.doctext.showline(showstring);
-// }
-// public void detailsalg(Graphics g, int i, int j) {
-//     if (algorithm==DIJKSTRA)
-//         detailsDijkstra(g, i, j);
-// }
-// public void endstepalg(Graphics g) {
-
-//     if (algorithm==DIJKSTRA)
-//         endstepDijkstra(g);
-//     if ( ( performalg ) && (mindist==0) ) {
-//         if (algrthm != null) algrthm.stop();
-//         int nreachable = 0;
-//         for (int i=0; i<numnodes; i++)
-//             if (finaldist[i] > 0)
-//                 nreachable++;
-//         if (nreachable == 0)
-//          root.ta.doctext.showline("none");
-//         else if (nreachable< (numnodes-emptyspots-1))
-//          root.ta.doctext.showline("some");
-//         else
-//        root.ta.doctext.showline("done");
-//     }
-// }
+    if (algorithm==DIJKSTRA)
+        endstepDijkstra(g);
+    if ( ( performalg ) && (mindist==0) ) {
+        if (algrthm != null) algrthm.stop();
+        int nreachable = 0;
+        for (int i=0; i<numnodes; i++)
+            if (finaldist[i] > 0)
+                nreachable++;
+        if (nreachable == 0)
+         root.ta.doctext.showline("none");
+        else if (nreachable< (numnodes-emptyspots-1))
+         root.ta.doctext.showline("some");
+        else
+       root.ta.doctext.showline("done");
+    }
+}
 public void paint(Graphics g) {
     mindist=0;
     minnode=MAXNODES;
@@ -711,8 +737,8 @@ public void paint(Graphics g) {
     for (int i=0; i<numnodes; i++)
         for (int j=0; j<numnodes; j++)
             if (weight [i][j]>0) {
-                // if (performalg)
-                //     detailsalg(g, i, j);
+                if (performalg)
+                    detailsalg(g, i, j);
                 drawarrow(g, i, j);
             }
     if (movearrow && weight[node1][node2]==0) {
@@ -730,7 +756,7 @@ g.setColor(Color.blue);
     if (movestart)
         g.fillOval(thispoint.x-NODERADIX, thispoint.y-NODERADIX,NODESIZE, NODESIZE);
     g.setColor(Color.orange);
-    //if (performalg) endstepalg(g);
+    if (performalg) endstepalg(g);
     g.setFont(f2);
     for (int i=0; i<numnodes; i++)
         if (node[i].x>0) {
