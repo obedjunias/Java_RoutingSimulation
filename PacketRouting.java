@@ -70,11 +70,11 @@ class Options extends Panel
                 p1.g.nextstep();
             if (((String)arg).equals("Reset")) {
                 p1.g.reset();
-                b3.setLabel("Step");
+                b3.setLabel("Run");
             }
             if (((String)arg).equals("Clear")) {
                 p1.g.clear();
-                b3.setLabel("Step");
+                b3.setLabel("Run");
             }
             if (((String)arg).equals("Run")) {
                 if (!locked)
@@ -125,9 +125,8 @@ class TxtOptions extends Panel{
         c.addItem("Run Algorithm");
         c.addItem("Step through");
         c.addItem("Exit");
-        c.addItem("All items");
         add(c);
-    }
+    } 
     public boolean action(Event evt, Object arg) {
         if (evt.target instanceof Choice) {
             String str=new String(c.getSelectedItem());
@@ -276,7 +275,7 @@ public void stepalg(){
 public void nextstep(){
     finaldist[minend] = mindist;
     algedge[minstart][minend] = true;
-    colornode[minend] = Color.cyan;
+    colornode[minend] = Color.blue;
     step++;
     repaint();
 
@@ -300,7 +299,7 @@ public void stop(){
 public void run(){
     for(int i=0;i<(numnodes-emptyspots);i++){
         nextstep();
-        try {algrthm.sleep(2000);}
+        try {algrthm.sleep(500);}
         catch (InterruptedException e){}
     }
     algrthm = null;
@@ -359,7 +358,7 @@ public boolean mouseDown(Event evt, int x, int y) {
         else
            root.ta.doctext.showline("Mouseclick too close to a point or arrowhead");
         repaint();
-    }
+    } 
     return true;
 }
 public boolean mouseDrag(Event evt, int x, int y) {
@@ -418,7 +417,7 @@ public boolean mouseUp(Event evt, int x, int y) {
                     if (weight[node2][node1]>0) {
                         arrowupdate(node2, node1, weight[node2][node1]);
                     }
-                   root.ta.doctext.showline("Change weights");
+                   root.ta.doctext.showline("Change distances");
                 }
                 else System.out.println("4B SelfStudy Project");
             }
@@ -688,7 +687,7 @@ public void endstepDijkstra(Graphics g) {
                     intToString(minend) + ".\n";
     }
     showstring = showstring + "Node " + intToString(minend) +
-            " will be colored orange to indicate " + mindist +
+            " will be colored blue to indicate " + mindist +
             " is the length of the shortest path to " + intToString(minend) +".";
    root.ta.doctext.showline(showstring);
 }
@@ -767,4 +766,4 @@ g.setColor(Color.blue);
             g.drawString(intToString(i), node[i].x-14, node[i].y-14);
         }
 }
-} 
+}  
