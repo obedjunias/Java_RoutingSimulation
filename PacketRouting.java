@@ -44,18 +44,17 @@ class Options extends Panel
     Button b2 = new Button("Clear");
     Button b3 = new Button("Run");
     Button b4 = new Button("Step");
-    Button b5 = new Button("Exit");
     PacketRouting p1;
     boolean locked = false; 
     Options(PacketRouting   root)
     {
         p1 = root;
-        setLayout(new GridLayout(5,1,0,0));
+        setLayout(new GridLayout(4,1,0,0));
         add(b1);
         add(b2);
         add(b3);
         add(b4);
-        add(b5);
+
     }
     
     public boolean action(Event evt, Object arg) {
@@ -81,9 +80,7 @@ class Options extends Panel
                     p1.g.runalg();
                 else p1.ta.doctext.showline("Locked");
             }
-            if (((String)arg).equals("Exit")) {
-                System.exit(0);
-            }
+           
         }
         return true;
     }
@@ -298,8 +295,8 @@ public void stop(){
 }
 public void run(){
     for(int i=0;i<(numnodes-emptyspots);i++){
-        nextstep();
-        try {algrthm.sleep(500);}
+        nextstep(); 
+        try {algrthm.sleep(1500);}
         catch (InterruptedException e){}
     }
     algrthm = null;
@@ -314,7 +311,7 @@ public boolean mouseDown(Event evt, int x, int y) {
             if (nodehit(x, y, NODESIZE)) {
                 oldpoint = node[hitnode];
                 node1 = hitnode;
-                movenode=true;
+                movenode=true; 
             }
         }
         else if (evt.controlDown()) {
@@ -336,6 +333,7 @@ public boolean mouseDown(Event evt, int x, int y) {
         else if (nodehit(x, y, NODESIZE)) {
             if (!newarrow) {
                 newarrow = true;
+
                 thispoint = new Point(x, y);
                 node1 = hitnode;
             }
@@ -706,14 +704,18 @@ public void endstepalg(Graphics g) {
             if (finaldist[i] > 0)
                 nreachable++;
         if (nreachable == 0)
-         root.ta.doctext.showline("none");
+         root.ta.doctext.showline("Path Unreachable/No path present");
         else if (nreachable< (numnodes-emptyspots-1))
-         root.ta.doctext.showline("some");
+         root.ta.doctext.showline("Some Unreachable nodes present");
         else
-       root.ta.doctext.showline("done");
+       root.ta.doctext.showline("Done");
     }
 }
+
 public void paint(Graphics g) {
+
+    Graphics2D g2 = (Graphics2D) g;
+    g2.setStroke(new BasicStroke(2));
     mindist=0;
     minnode=MAXNODES;
     minstart=MAXNODES;
@@ -723,6 +725,7 @@ public void paint(Graphics g) {
     numchanged=0;
     neighbours=0;
     g.setFont(f1);
+    
     g.setColor(Color.green.darker());
     if (step==1)
         showstring="Algorithm running: red arrows point to nodes reachable from " +
@@ -732,7 +735,7 @@ public void paint(Graphics g) {
                 "nodes that already have a final distance." +
                 "\nThe distance to: ";
     if (newarrow)
-        g.drawLine(node[node1].x, node[node1].y, thispoint.x, thispoint.y);
+        g2.drawLine(node[node1].x, node[node1].y, thispoint.x, thispoint.y);
     for (int i=0; i<numnodes; i++)
         for (int j=0; j<numnodes; j++)
             if (weight [i][j]>0) {
@@ -742,7 +745,7 @@ public void paint(Graphics g) {
             }
     if (movearrow && weight[node1][node2]==0) {
         drawarrow(g, node1, node2);
-        g.drawLine(startp[node1][node2].x, startp[node1][node2].y,
+        g2.drawLine(startp[node1][node2].x, startp[node1][node2].y,
                 endp[node1][node2].x, endp[node1][node2].y);
     }
     for (int i=0; i<numnodes; i++)
